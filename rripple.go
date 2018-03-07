@@ -14,9 +14,7 @@ func Group(ctrl Ctrl, e *echo.Echo) {
 	vof := reflect.ValueOf(ctrl)
 	elem := vof.Elem()
 	typ := vof.Type().String()
-	ctrlName := strings.Split(typ, ".")[1]
-	rsrcName := strings.Replace(ctrlName, "Ctrl", "", 1)
-	route := fmt.Sprintf("/%s", strings.ToLower(rsrcName))
+	route := convertRouteFromType(typ)
 
 	numOfRoutes := elem.Type().NumField()
 	for i := 0; i < numOfRoutes; i++ {
@@ -31,4 +29,10 @@ func Group(ctrl Ctrl, e *echo.Echo) {
 		}
 		echMd.Call(args)
 	}
+}
+
+func convertRouteFromType(ctrlType string) string {
+	ctrlName := strings.Split(ctrlType, ".")[1]
+	rsrcName := strings.Replace(ctrlName, "Ctrl", "", 1)
+	return fmt.Sprintf("/%s", strings.ToLower(rsrcName))
 }
