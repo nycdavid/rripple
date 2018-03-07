@@ -31,9 +31,4 @@ func Group(ctrl Ctrl, e *echo.Echo) {
 		}
 		echMd.Call(args)
 	}
-
-	// e.GET(fmt.Sprintf("%s/:id", route), func(ctx echo.Context) error {
-	// 	res := fmt.Sprintf("Showing post %s", ctx.Param("id"))
-	// 	return ctx.String(http.StatusOK, res)
-	// })
 }
