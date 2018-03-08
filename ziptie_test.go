@@ -1,4 +1,4 @@
-package rripple
+package ziptie
 
 import (
 	"fmt"
@@ -25,7 +25,7 @@ func (ctrl *PostsCtrl) ShowFunc(ctx echo.Context) error {
 
 func TestRrippleGroupWithOneMethod(t *testing.T) {
 	e := echo.New()
-	Group(&PostsCtrl{}, e)
+	Fasten(&PostsCtrl{}, e)
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts", nil)
@@ -38,7 +38,7 @@ func TestRrippleGroupWithOneMethod(t *testing.T) {
 
 func TestRrippleGroupWithASecondMethod(t *testing.T) {
 	e := echo.New()
-	Group(&PostsCtrl{}, e)
+	Fasten(&PostsCtrl{}, e)
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts/1", nil)

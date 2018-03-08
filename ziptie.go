@@ -1,4 +1,4 @@
-package rripple
+package ziptie
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 type Ctrl interface{}
 
-func Group(ctrl Ctrl, e *echo.Echo) {
+func Fasten(ctrl Ctrl, e *echo.Echo) {
 	vof := reflect.ValueOf(ctrl)
 	elem := vof.Elem()
 	typ := vof.Type().String()
