@@ -19,6 +19,7 @@ func Fasten(ctrl Ctrl, e *echo.Echo) {
 	numOfRoutes := elem.Type().NumField()
 	for i := 0; i < numOfRoutes; i++ {
 		field := elem.Type().Field(i)
+		fmt.Println(field.Type.Name())
 		path := field.Tag.Get("path")
 		method := field.Tag.Get("method")
 		handler := vof.MethodByName(fmt.Sprintf("%sFunc", field.Name))

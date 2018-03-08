@@ -23,7 +23,7 @@ func (ctrl *PostsCtrl) ShowFunc(ctx echo.Context) error {
 	return ctx.String(http.StatusOK, res)
 }
 
-func TestRrippleGroupWithOneMethod(t *testing.T) {
+func TestFastenWithOneMethod(t *testing.T) {
 	e := echo.New()
 	Fasten(&PostsCtrl{}, e)
 
@@ -36,7 +36,7 @@ func TestRrippleGroupWithOneMethod(t *testing.T) {
 	}
 }
 
-func TestRrippleGroupWithASecondMethod(t *testing.T) {
+func TestFastenWithASecondMethod(t *testing.T) {
 	e := echo.New()
 	Fasten(&PostsCtrl{}, e)
 
@@ -50,5 +50,26 @@ func TestRrippleGroupWithASecondMethod(t *testing.T) {
 	}
 	if string(byt) != "Showing post 1" {
 		t.Error("Unexpected response body")
+	}
+}
+
+type MixedCtrl struct {
+	SomeText func()
+	Index    func() `path:"", method:"GET"`
+}
+
+func (mc *MixedCtrl) IndexFunc(ctx echo.Context) error {
+	return ctx.String(http.StatusOK, "Index")
+}
+
+func TestHandlingOfNonMethodFieldsInStruct(t *testing.T) {
+	e := echo.New()
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	Fasten(&MixedCtrl{}, e)
+	e.ServeHTTP(rec, req)
+
+	if rec.Code != 200 {
+		t.Error("Status Code is not 200")
 	}
 }
