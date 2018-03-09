@@ -10,8 +10,9 @@ import (
 )
 
 type PostsCtrl struct {
-	Index interface{} `path:"" method:"GET"`
-	Show  interface{} `path:"/:id" method:"GET"`
+	Namespace string
+	Index     interface{} `path:"" method:"GET"`
+	Show      interface{} `path:"/:id" method:"GET"`
 }
 
 func (ctrl *PostsCtrl) IndexFunc(ctx echo.Context) error {
@@ -25,7 +26,7 @@ func (ctrl *PostsCtrl) ShowFunc(ctx echo.Context) error {
 
 func TestFastenWithOneMethod(t *testing.T) {
 	e := echo.New()
-	Fasten(&PostsCtrl{}, e)
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e)
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts", nil)
@@ -38,7 +39,7 @@ func TestFastenWithOneMethod(t *testing.T) {
 
 func TestFastenWithASecondMethod(t *testing.T) {
 	e := echo.New()
-	Fasten(&PostsCtrl{}, e)
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e)
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts/1", nil)
@@ -54,8 +55,9 @@ func TestFastenWithASecondMethod(t *testing.T) {
 }
 
 type MixedCtrl struct {
-	Config map[string]interface{}
-	Index  interface{} `path:"" method:"GET"`
+	Namespace string
+	Config    map[string]interface{}
+	Index     interface{} `path:"" method:"GET"`
 }
 
 func (mc *MixedCtrl) IndexFunc(ctx echo.Context) error {
@@ -64,7 +66,7 @@ func (mc *MixedCtrl) IndexFunc(ctx echo.Context) error {
 
 func TestHandlingOfNonMethodFieldsInStruct(t *testing.T) {
 	e := echo.New()
-	Fasten(&MixedCtrl{}, e)
+	Fasten(&MixedCtrl{Namespace: "/mixed"}, e)
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/mixed", nil)
@@ -81,4 +83,27 @@ type MissingHandlerFuncCtrl struct {
 
 func TestMissingHandlerFunc(t *testing.T) {
 	t.Skip("TODO")
+}
+
+type NamespacedCtrl struct {
+	Namespace string
+	Index     interface{} `path:"/foo" method:"GET"`
+}
+
+func (nc *NamespacedCtrl) IndexFunc(ctx echo.Context) error {
+	return ctx.String(http.StatusOK, "foo")
+}
+
+func TestNamespacedCtrl(t *testing.T) {
+	e := echo.New()
+	ctrl := &NamespacedCtrl{Namespace: "/admin"}
+	Fasten(ctrl, e)
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(echo.GET, "/admin/foo", nil)
+	e.ServeHTTP(rec, req)
+
+	if rec.Code != 200 {
+		t.Error(fmt.Sprintf("Expecting %d, got %d", 200, rec.Code))
+	}
 }
