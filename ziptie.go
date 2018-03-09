@@ -22,8 +22,7 @@ func Fasten(ctrl Ctrl, e *echo.Echo) {
 		if field.Name == "Config" || field.Name == "Namespace" {
 			continue
 		}
-		path := field.Tag.Get("path")
-		method := field.Tag.Get("method")
+		path, method := extractPathAndMethod(field)
 		handler := vof.MethodByName(fmt.Sprintf("%sFunc", field.Name))
 		echMd := reflect.ValueOf(e).MethodByName(method)
 		fullPath := fmt.Sprintf("%s%s", route, path)
@@ -37,4 +36,8 @@ func Fasten(ctrl Ctrl, e *echo.Echo) {
 
 func convertRouteFromType(namespace string) string {
 	return fmt.Sprintf("%s", strings.ToLower(namespace))
+}
+
+func extractPathAndMethod(field reflect.StructField) (string, string) {
+	return field.Tag.Get("path"), field.Tag.Get("method")
 }
