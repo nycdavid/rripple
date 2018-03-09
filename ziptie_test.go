@@ -87,23 +87,27 @@ func TestMissingHandlerFunc(t *testing.T) {
 
 type NamespacedCtrl struct {
 	Namespace string
-	Index     interface{} `path:"/foo" method:"GET"`
+	Foo       interface{} `path:"/" method:"GET"`
 }
 
-func (nc *NamespacedCtrl) IndexFunc(ctx echo.Context) error {
+func (nc *NamespacedCtrl) FooFunc(ctx echo.Context) error {
 	return ctx.String(http.StatusOK, "foo")
 }
 
-func TestNamespacedCtrl(t *testing.T) {
+func TestRootCtrl(t *testing.T) {
 	e := echo.New()
-	ctrl := &NamespacedCtrl{Namespace: "/admin"}
+	ctrl := &NamespacedCtrl{Namespace: ""}
 	Fasten(ctrl, e)
 
 	rec := httptest.NewRecorder()
-	req := httptest.NewRequest(echo.GET, "/admin/foo", nil)
+	req := httptest.NewRequest(echo.GET, "/", nil)
 	e.ServeHTTP(rec, req)
+	byt := rec.Body.Bytes()
 
 	if rec.Code != 200 {
 		t.Error(fmt.Sprintf("Expecting %d, got %d", 200, rec.Code))
+	}
+	if string(byt) != "foo" {
+		t.Error("Unexpected response body")
 	}
 }
