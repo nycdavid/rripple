@@ -54,8 +54,8 @@ func TestFastenWithASecondMethod(t *testing.T) {
 }
 
 type MixedCtrl struct {
-	SomeText func()
-	Index    func() `path:"", method:"GET"`
+	Config map[string]interface{}
+	Index  interface{} `path:"" method:"GET"`
 }
 
 func (mc *MixedCtrl) IndexFunc(ctx echo.Context) error {
@@ -64,12 +64,21 @@ func (mc *MixedCtrl) IndexFunc(ctx echo.Context) error {
 
 func TestHandlingOfNonMethodFieldsInStruct(t *testing.T) {
 	e := echo.New()
-	rec := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	Fasten(&MixedCtrl{}, e)
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/mixed", nil)
 	e.ServeHTTP(rec, req)
 
 	if rec.Code != 200 {
 		t.Error("Status Code is not 200")
 	}
+}
+
+type MissingHandlerFuncCtrl struct {
+	Index interface{} `path:"" method:"GET"`
+}
+
+func TestMissingHandlerFunc(t *testing.T) {
+	t.Skip("TODO")
 }
