@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"gopkg.in/labstack/echo.v3"
+	"github.com/labstack/echo"
 )
 
 type Ctrl interface{}

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gopkg.in/labstack/echo.v3"
+	"github.com/labstack/echo"
 )
 
 type PostsCtrl struct {

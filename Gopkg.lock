@@ -2,11 +2,14 @@
 
 
 [[projects]]
+  name = "github.com/labstack/echo"
+  packages = ["."]
+  revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
+  version = "3.2.6"
+
+[[projects]]
   name = "github.com/labstack/gommon"
-  packages = [
-    "color",
-    "log"
-  ]
+  packages = ["color","log"]
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
 
@@ -37,10 +40,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = [
-    "acme",
-    "acme/autocert"
-  ]
+  packages = ["acme","acme/autocert"]
   revision = "85f98707c97e11569271e4d9b3d397e079c4f4d0"
 
 [[projects]]
@@ -49,15 +49,9 @@
   packages = ["unix"]
   revision = "dd2ff4accc098aceecb86b36eaa7829b2a17b1c9"
 
-[[projects]]
-  name = "gopkg.in/labstack/echo.v3"
-  packages = ["."]
-  revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
-  version = "3.2.6"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b21ecde9527ead575fd1c275e6735be22c0d9872865fc509f57b81949a277b2a"
+  inputs-digest = "b8fe5a95d3a604eef275ed7e141f7e898522c298352c51a379e7390f9e7804da"
   solver-name = "gps-cdcl"
   solver-version = 1
