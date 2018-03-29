@@ -21,6 +21,10 @@ func (ctrl *PostsCtrl) IndexFunc(ctx echo.Context) error {
 
 func (ctrl *PostsCtrl) ShowFunc(ctx echo.Context) error {
 	res := fmt.Sprintf("Showing post %s", ctx.Param("id"))
+	foo := ctx.QueryParam("foo")
+	if foo != "" {
+		return ctx.String(http.StatusOK, "Query Param found!")
+	}
 	return ctx.String(http.StatusOK, res)
 }
 
@@ -109,5 +113,22 @@ func TestRootCtrl(t *testing.T) {
 	}
 	if string(byt) != "foo" {
 		t.Error("Unexpected response body")
+	}
+}
+
+func TestQueryParameterHandling(t *testing.T) {
+	expected := "Query Param found!"
+	e := echo.New()
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e)
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/posts/123?foo=bar", nil)
+	e.ServeHTTP(rec, req)
+
+	if rec.Code != 200 {
+		t.Error("Status Code is not 200")
+	}
+	if rec.Body.String() != expected {
+		t.Error(fmt.Sprintf("Expected body to be %s, got %s", expected, rec.Body.String()))
 	}
 }
