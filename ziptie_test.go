@@ -10,6 +10,7 @@ import (
 )
 
 type PostsCtrl struct {
+	DB        bool
 	Namespace string
 	Index     interface{} `path:"" method:"GET"`
 	Show      interface{} `path:"/:id" method:"GET"`

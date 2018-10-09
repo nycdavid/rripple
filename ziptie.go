@@ -19,7 +19,7 @@ func Fasten(ctrl Ctrl, e *echo.Echo) {
 	numOfRoutes := elem.Type().NumField()
 	for i := 0; i < numOfRoutes; i++ {
 		field := elem.Type().Field(i)
-		if field.Name == "Config" || field.Name == "Namespace" {
+		if field.Name == "Config" || field.Name == "Namespace" || field.Name == "DB" {
 			continue
 		}
 		path, method := extractPathAndMethod(field)
