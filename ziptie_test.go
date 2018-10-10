@@ -31,7 +31,7 @@ func (ctrl *PostsCtrl) ShowFunc(ctx echo.Context) error {
 
 func TestFastenWithOneMethod(t *testing.T) {
 	e := echo.New()
-	Fasten(&PostsCtrl{Namespace: "/posts"}, e)
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e, "")
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts", nil)
@@ -44,7 +44,7 @@ func TestFastenWithOneMethod(t *testing.T) {
 
 func TestFastenWithASecondMethod(t *testing.T) {
 	e := echo.New()
-	Fasten(&PostsCtrl{Namespace: "/posts"}, e)
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e, "")
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts/1", nil)
@@ -71,7 +71,7 @@ func (mc *MixedCtrl) IndexFunc(ctx echo.Context) error {
 
 func TestHandlingOfNonMethodFieldsInStruct(t *testing.T) {
 	e := echo.New()
-	Fasten(&MixedCtrl{Namespace: "/mixed"}, e)
+	Fasten(&MixedCtrl{Namespace: "/mixed"}, e, "")
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/mixed", nil)
@@ -102,7 +102,7 @@ func (nc *NamespacedCtrl) FooFunc(ctx echo.Context) error {
 func TestRootCtrl(t *testing.T) {
 	e := echo.New()
 	ctrl := &NamespacedCtrl{Namespace: ""}
-	Fasten(ctrl, e)
+	Fasten(ctrl, e, "")
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(echo.GET, "/", nil)
@@ -120,7 +120,7 @@ func TestRootCtrl(t *testing.T) {
 func TestQueryParameterHandling(t *testing.T) {
 	expected := "Query Param found!"
 	e := echo.New()
-	Fasten(&PostsCtrl{Namespace: "/posts"}, e)
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e, "")
 
 	rec := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/posts/123?foo=bar", nil)
@@ -131,5 +131,18 @@ func TestQueryParameterHandling(t *testing.T) {
 	}
 	if rec.Body.String() != expected {
 		t.Error(fmt.Sprintf("Expected body to be %s, got %s", expected, rec.Body.String()))
+	}
+}
+
+func Test_supportsANamespaceAtFasten(t *testing.T) {
+	e := echo.New()
+	Fasten(&PostsCtrl{Namespace: "/posts"}, e, "/api/v1")
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/posts/123", nil)
+	e.ServeHTTP(rec, req)
+
+	if rec.Code != 200 {
+		t.Error("Status Code is not 200")
 	}
 }

@@ -10,7 +10,7 @@ import (
 
 type Ctrl interface{}
 
-func Fasten(ctrl Ctrl, e *echo.Echo) {
+func Fasten(ctrl Ctrl, e *echo.Echo, mountPt string) {
 	vof := reflect.ValueOf(ctrl)
 	elem := vof.Elem()
 	namespace := elem.FieldByName("Namespace").String()
@@ -25,7 +25,7 @@ func Fasten(ctrl Ctrl, e *echo.Echo) {
 		path, method := extractPathAndMethod(field)
 		handler := vof.MethodByName(fmt.Sprintf("%sFunc", field.Name))
 		echMd := reflect.ValueOf(e).MethodByName(method)
-		fullPath := fmt.Sprintf("%s%s", route, path)
+		fullPath := fmt.Sprintf("%s%s%s", mountPt, route, path)
 		args := []reflect.Value{
 			reflect.ValueOf(fullPath),
 			handler,
